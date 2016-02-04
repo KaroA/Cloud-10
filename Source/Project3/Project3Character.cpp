@@ -18,11 +18,11 @@ AProject3Character::AProject3Character(const FObjectInitializer& ObjectInitializ
 	: Super(ObjectInitializer)
 {
 	//set custom character movement component
-	/*UMyCharacterMovementComponent* CustomCharMovementComp = Cast<UCharacterMovementComponent>(CharacterMovement);
+	UMyCharacterMovementComponent* CustomCharMovementComp = Cast<UMyCharacterMovementComponent>(GetCharacterMovement());
 	if (CustomCharMovementComp)
 	{
-		CustomCharMovementComp->CallFunction();
-	}*/
+		CustomCharMovementComp->bOrientRotationToMovement = true;
+	}
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 

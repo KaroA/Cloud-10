@@ -21,7 +21,9 @@ public:
 	//virtual void Tick(float DeltaSeconds) override;
 
 protected:
+	//Init
 	//virtual void InitializeComponent() override;
-	//virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+	//Tick
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	
 };
