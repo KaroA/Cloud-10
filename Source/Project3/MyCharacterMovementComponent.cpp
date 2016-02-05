@@ -2,14 +2,22 @@
 
 #include "Project3.h"
 #include "MyCharacterMovementComponent.h"
+#include "Engine.h"
 
 
 UMyCharacterMovementComponent::UMyCharacterMovementComponent(const FObjectInitializer &ObjectInitializer) 
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UMyCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-
+	
 }
 
+bool UMyCharacterMovementComponent::DoDive()
+{
+	if (UMyCharacterMovementComponent::IsDiving)
+	{
+
+	}
+}
 
 bool UMyCharacterMovementComponent::DoJump(bool bReplayingMoves)
 {
@@ -28,16 +36,36 @@ bool UMyCharacterMovementComponent::DoJump(bool bReplayingMoves)
 
 		}
 	}*/
+
 	return false;
 }
 
-/*void UMyCharacterMovementComponent::InitializeComponent()
+void UMyCharacterMovementComponent::PhysCustom(float deltaTime, int32 Iterations)
 {
-	Super::InitializeComponent();
-}*/
+	switch (CustomMovementMode)
+	{
+	case MOVE_Diving:
+		PhysCustomDive(deltaTime, Iterations);
+		break;
+	case MOVE_Walking:
+		PhysCustomWalk(deltaTime, Iterations);
+		break;
+	}
+}
+
+void UMyCharacterMovementComponent::PhysCustomDive(float deltaTime, int32 Iterations)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Dive"));
+	
+}
+
+void UMyCharacterMovementComponent::PhysCustomWalk(float deltaTime, int32 Iterations)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Walk"));
+
+}
 
 void UMyCharacterMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	//custome component ticking
 }

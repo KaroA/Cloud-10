@@ -220,7 +220,3 @@ Binaries
 DerivedDataCache
 Intermediate
 Saved
-
-*.sdf
-*.suo
-*.sln

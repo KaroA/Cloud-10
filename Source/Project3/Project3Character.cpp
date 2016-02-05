@@ -13,6 +13,8 @@ float airTime = 2.0f;;
 float jumpSpeed = 6.0f;;
 float gravity = 20.0f;
 float gravityForce = 3.0f;
+bool diving;
+bool bounce;
 
 AProject3Character::AProject3Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -22,6 +24,8 @@ AProject3Character::AProject3Character(const FObjectInitializer& ObjectInitializ
 	if (CustomCharMovementComp)
 	{
 		CustomCharMovementComp->bOrientRotationToMovement = true;
+		//set custom diving movement on key press
+		CustomCharMovementComp->SetMovementMode(MOVE_Custom, MOVE_Diving);
 	}
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
