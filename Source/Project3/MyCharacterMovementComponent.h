@@ -13,8 +13,8 @@
 UENUM(BlueprintType)
 enum TCustomMovementMode
 {
-	MOVE_Diving UMETA(DisplayName = "Diving"),
-	MOVE_Walking UMETA(DisplayName = "Walking")
+	TMOVE_Diving UMETA(DisplayName = "Diving"),
+	TMOVE_Walking UMETA(DisplayName = "Walking")
 };
 
 UCLASS()
@@ -23,24 +23,27 @@ class PROJECT3_API UMyCharacterMovementComponent : public UCharacterMovementComp
 	GENERATED_UCLASS_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere,Category = MovementMode, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere,Category = Enum, BlueprintReadWrite)
 	TEnumAsByte<enum TCustomMovementMode> NewCustomMovementMode;
 
 	virtual bool DoJump(bool bReplayingMoves) override;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = Dive)
-	bool DoDive();
 	// Called every frame
 	//virtual void Tick(float DeltaSeconds) override;
 
 	//BEGIN UMovementComponent Interface
-	virtual float GetMaxSpeed() const override;
-	virtual void StopActiveMovement() override;
+	//virtual float GetMaxSpeed() const override;
+	//virtual void StopActiveMovement() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Dive)
-	bool IsDiving() const;
+	bool IsDiving;
 
+	//UFUNCTION(BlueprintImplementableEvent, Category = Character)
+	//void startBounceJump();
 protected:
+
+	//UFUNCTION(BlueprintImplementableEvent, Category = Dive)
+	//void DoDive();
 	//virtual void InitializeComponent() override;
 	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
 	//??

@@ -11,18 +11,19 @@ UMyCharacterMovementComponent::UMyCharacterMovementComponent(const FObjectInitia
 	
 }
 
-bool UMyCharacterMovementComponent::DoDive()
+/*void UMyCharacterMovementComponent::DoDive()
 {
-	if (UMyCharacterMovementComponent::IsDiving)
+	if (&UMyCharacterMovementComponent::IsDiving)
 	{
 
 	}
-}
+}*/
 
 bool UMyCharacterMovementComponent::DoJump(bool bReplayingMoves)
 {
 	if (&UCharacterMovementComponent::IsFalling)
 	{
+		
 	}
 	/*if (!IsFalling)
 	{
@@ -40,14 +41,15 @@ bool UMyCharacterMovementComponent::DoJump(bool bReplayingMoves)
 	return false;
 }
 
+
 void UMyCharacterMovementComponent::PhysCustom(float deltaTime, int32 Iterations)
 {
 	switch (CustomMovementMode)
 	{
-	case MOVE_Diving:
+	case TMOVE_Diving:
 		PhysCustomDive(deltaTime, Iterations);
 		break;
-	case MOVE_Walking:
+	case TMOVE_Walking:
 		PhysCustomWalk(deltaTime, Iterations);
 		break;
 	}

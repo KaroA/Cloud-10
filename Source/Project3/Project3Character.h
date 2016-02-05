@@ -49,6 +49,15 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent,Category = Power)
 	void PowerUp(float batteryPower);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = Power)
+		void Teset();
+
+	UFUNCTION(BlueprintCallable, Category="Character")
+	void BounceJump();
+
+	UFUNCTION(BlueprintCallable, Category = Dive)
+	void Dive();
+
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 

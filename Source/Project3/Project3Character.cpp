@@ -4,6 +4,7 @@
 #include "Project3Character.h"
 #include "BatteryPickup.h"
 #include "MyCharacterMovementComponent.h"
+#include "Engine.h"
 //////////////////////////////////////////////////////////////////////////
 // AProject3Character
 
@@ -15,17 +16,18 @@ float gravity = 20.0f;
 float gravityForce = 3.0f;
 bool diving;
 bool bounce;
+UMyCharacterMovementComponent* CustomCharMovementComp;
 
 AProject3Character::AProject3Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	//set custom character movement component
-	UMyCharacterMovementComponent* CustomCharMovementComp = Cast<UMyCharacterMovementComponent>(GetCharacterMovement());
+	CustomCharMovementComp = Cast<UMyCharacterMovementComponent>(GetCharacterMovement());
 	if (CustomCharMovementComp)
 	{
 		CustomCharMovementComp->bOrientRotationToMovement = true;
 		//set custom diving movement on key press
-		CustomCharMovementComp->SetMovementMode(MOVE_Custom, MOVE_Diving);
+		CustomCharMovementComp->SetMovementMode(MOVE_Custom,TMOVE_Walking);
 	}
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -88,6 +90,8 @@ void AProject3Character::SetupPlayerInputComponent(class UInputComponent* InputC
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	InputComponent->BindAction("Dive", IE_Pressed, this, &AProject3Character::Dive);
+
 	InputComponent->BindAction("CollectObjects", IE_Pressed, this, &AProject3Character::CollectBatteries);
 
 	InputComponent->BindAxis("MoveForward", this, &AProject3Character::MoveForward);
@@ -106,6 +110,39 @@ void AProject3Character::SetupPlayerInputComponent(class UInputComponent* InputC
 	InputComponent->BindTouch(IE_Released, this, &AProject3Character::TouchStopped);
 }
 
+void AProject3Character::Dive()
+{
+	//if player already diving, turn dive mode off on button press
+	if (diving == true)
+	{
+		diving = false;
+		if (CustomCharMovementComp->IsMovingOnGround())
+		{
+			CustomCharMovementComp->SetMovementMode(MOVE_Custom,TMOVE_Walking);
+		}
+		else
+		{
+			CustomCharMovementComp->SetMovementMode(MOVE_Falling);
+		}
+	}
+	else
+	{
+		diving = true;
+		CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Diving);
+	}
+}
+
+void AProject3Character::BounceJump()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("bounceJump"));
+	const FVector ForwardDir = GetActorForwardVector();
+
+	float momentum = 100;
+	float jumpVelocity = 800;
+	const FVector AddForce = ForwardDir * momentum + FVector(0, 0, 1) * jumpVelocity;
+	LaunchCharacter(AddForce, false, true);
+	jumpVelocity = 600;
+}
 
 void AProject3Character::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
@@ -199,10 +236,11 @@ void AProject3Character::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	//set character speed
-	CharacterMovement->MaxWalkSpeed = speedFactor * powerLevel + baseSpeed;
-	if (bPressedJump)
-		JumpMaxHoldTime = 4.0f;
-
+	//CharacterMovement->MaxWalkSpeed = speedFactor * powerLevel + baseSpeed;
+	/*if (bPressedJump)
+		JumpMaxHoldTime = 4.0f;*/
+	if (diving){}
+		
 	/*if (!CharacterMovement->IsFalling)
 	{
 		forceY = false;
