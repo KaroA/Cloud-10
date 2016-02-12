@@ -216,7 +216,5 @@ pip-log.txt
 .mr.developer.cfg
 
 #UE4 Files
-Binaries
 DerivedDataCache
-Intermediate
 Saved
