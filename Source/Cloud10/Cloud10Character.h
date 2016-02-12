@@ -1,7 +1,10 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
+#include "MyCharacterMovementComp.h"
 #include "Cloud10Character.generated.h"
+
+class UMyCharacterMovementComponent;
 
 UCLASS(config=Game)
 class ACloud10Character : public ACharacter
@@ -17,6 +20,11 @@ class ACloud10Character : public ACharacter
 	class UCameraComponent* FollowCamera;
 public:
 	ACloud10Character(const FObjectInitializer& ObjectInitializer);
+
+	/** Returns CharacterMovement subobject **/
+	//class UMyCharacterMovementComp* GetCharacterMovement() const override;
+
+	UMyCharacterMovementComp* CustomCharMovementComp;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -39,20 +47,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Default)
 		void bounceJump();
 
+	UFUNCTION(BlueprintCallable, Category = Default)
+		void DiveForward(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = Default)
+		void DiveRight(float Value);
+
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
 
 	float rotationRate;
-	float minPitch, maxPitch, minRoll, maxRoll;
-	float curPitchAmt, curRollAmt;
+	float minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw;
+	float curPitchAmt, curRollAmt, curYawAmt;
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
 	/** Called for side to side input */
 	void MoveRight(float Value);
 
-	void Dive();
+	void DiveMode();
 	/** 
 	 * Called via input to turn at a given rate. 
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate

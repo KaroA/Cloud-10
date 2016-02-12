@@ -19,9 +19,11 @@ enum TCustomMovementMode
 UCLASS()
 class CLOUD10_API UMyCharacterMovementComp : public UCharacterMovementComponent
 {
-	GENERATED_UCLASS_BODY()
+	GENERATED_BODY()
 	
 public:
+	UMyCharacterMovementComp(const FObjectInitializer &ObjectInitializer);
+
 	UPROPERTY(EditAnywhere, Category = Enum, BlueprintReadWrite)
 		TEnumAsByte<enum TCustomMovementMode> NewCustomMovementMode;
 
@@ -40,6 +42,8 @@ public:
 	//UFUNCTION(BlueprintImplementableEvent, Category = Character)
 	//void startBounceJump();
 protected:
+	//Init
+	virtual void InitializeComponent() override;
 
 	//UFUNCTION(BlueprintImplementableEvent, Category = Dive)
 	//void DoDive();

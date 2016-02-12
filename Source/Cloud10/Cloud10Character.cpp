@@ -2,15 +2,11 @@
 
 #include "Cloud10.h"
 #include "Cloud10Character.h"
-#include "MyCharacterMovementComp.h"
 #include "Engine.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ACloud10Character
 
-UMyCharacterMovementComp* CustomCharMovementComp;
-
-bool diving;
 
 ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -30,12 +26,14 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	rotationRate = 50.f;
+	rotationRate = 2.f;
 
 	minPitch = -30.f;
 	maxPitch = 30.f;
 	minRoll = -30.f;
 	maxRoll = 30.f;
+	minYaw = -30.f;
+	maxYaw = 30.f;
 
 	momentum = 100;
 	jumpVelocity = 3000;
@@ -75,7 +73,7 @@ void ACloud10Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	check(InputComponent);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
+	InputComponent->BindAction("Dive", IE_Pressed, this, &ACloud10Character::DiveMode);
 	InputComponent->BindAxis("MoveForward", this, &ACloud10Character::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ACloud10Character::MoveRight);
 
@@ -92,26 +90,30 @@ void ACloud10Character::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindTouch(IE_Released, this, &ACloud10Character::TouchStopped);
 }
 
-void ACloud10Character::Dive()
+void ACloud10Character::DiveMode()
 {
 	//if player already diving, turn dive mode off on button press
-	if (diving == true)
+	if (isDiving == true)
 	{
-		diving = false;
-		if (CustomCharMovementComp->IsMovingOnGround())
+		isDiving = false;
+		/*if (CustomCharMovementComp->IsMovingOnGround())
 		{
 			CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Walking);
 		}
 		else
 		{
 			CustomCharMovementComp->SetMovementMode(MOVE_Falling);
-		}
+		}*/
 	}
 	else
 	{
-		diving = true;
-		CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Diving);
+		isDiving = true;
+		//CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Diving);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Dive Mode"));
+		//flip character
+		FRotator tempRotation = GetActorRotation();
+		tempRotation.Pitch = 180;
+		SetActorRotation(tempRotation);
 	}
 }
 
@@ -154,22 +156,80 @@ void ACloud10Character::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+void ACloud10Character::DiveForward(float Value)
+{
+	float prevPitch = GetActorRotation().Pitch;
+	float minDeltaPitch = minPitch - prevPitch;
+	float maxDeltaPitch = maxPitch - prevPitch;
+	//roll character in an angle front and back
+	curPitchAmt = Value;
+	const FRotator Rotation = GetActorRotation();
+	FRotator dRotation(0, 0, 0);
+	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
+	dRotation.Pitch = FMath::ClampAngle(curPitchAmt * Direction.Y, minDeltaPitch, maxDeltaPitch);
+	AddActorLocalRotation(dRotation);
+	//AddControllerPitchInput(dRotation.Pitch);
+}
+
+void ACloud10Character::DiveRight(float Value)
+{
+	float prevYaw = GetActorRotation().Yaw;
+	float minDeltaYaw = minYaw - prevYaw;
+	float maxDeltaYaw = maxYaw - prevYaw;
+	//roll character in an angle front and back
+	curYawAmt = Value;
+	const FRotator Rotation = GetActorRotation();
+	FRotator dRotation(0, 0, 0);
+	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Z);
+	dRotation.Yaw = FMath::ClampAngle(curYawAmt * Direction.Z, minDeltaYaw, maxDeltaYaw);
+	AddActorLocalRotation(dRotation);
+	//adjust yaw
+		/*float val = 30;
+		float axisVal;
+		UStaticMeshComponent* smc = Cast<UStaticMeshComponent>(RootComponent);
+
+		axisVal = Value * val;
+		//add tilting movement control on left & right
+		FRotator Rotation = GetActorRotation();
+		Rotation.Roll = Value;
+		AddActorLocalRotation(Rotation);*/
+		curRollAmt = Value;
+
+		// find out which way is right
+
+		/*const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		// get right vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		//smc->SetPhysicsLinearVelocity(Direction * axisVal);
+		AddControllerYawInput((Direction * axisVal));*/
+}
+
 void ACloud10Character::MoveForward(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if (isDiving)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
-	if (diving)
-	{
+		float prevPitch = GetActorRotation().Pitch;
+		float minDeltaPitch = minPitch - prevPitch;
+		float maxDeltaPitch = maxPitch - prevPitch;
 		//roll character in an angle front and back
-		curRollAmt = Value;
+		curPitchAmt = Value;
+		FRotator dRotation(0,0,0);
+		dRotation.Pitch = FMath::ClampAngle(curPitchAmt * rotationRate, minDeltaPitch, maxDeltaPitch);
+		AddActorLocalRotation(dRotation);
+	}
+	else
+	{
+		if ((Controller != NULL) && (Value != 0.0f))
+		{
+			// find out which way is forward
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(Direction, Value);
+		}
 	}
 
 }
@@ -187,9 +247,10 @@ void ACloud10Character::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
-	if (diving)
+	//adjust yaw
+	if (isDiving)
 	{
-		float val = 30;
+		/*float val = 30;
 		float axisVal;
 		UStaticMeshComponent* smc = Cast<UStaticMeshComponent>(RootComponent);
 		
@@ -197,7 +258,8 @@ void ACloud10Character::MoveRight(float Value)
 		//add tilting movement control on left & right
 		FRotator Rotation = GetActorRotation();
 		Rotation.Roll = Value;
-		AddActorLocalRotation(Rotation);
+		AddActorLocalRotation(Rotation);*/
+		curRollAmt = Value;
 
 		// find out which way is right
 		
@@ -222,16 +284,22 @@ void ACloud10Character::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
 
-	if (diving)
+	/*if (isDiving)
 	{
 		//add gravity to pawn to increase acceleration
 
+		float prevPitch = GetActorRotation().Pitch;
+		float minDeltaPitch = minPitch - prevPitch;
+		float maxDeltaPitch = maxPitch - prevPitch;
 		//add tilting movement control on left & right
-		FRotator dRotation = GetActorRotation();
+		FRotator dRotation(0, 0, 0);
 		//clamp roll amt and set roll based on input value
-		dRotation.Roll = FMath::ClampAngle(rotationRate * deltaSeconds, minRoll, maxRoll);
-		dRotation.Pitch = FMath::ClampAngle(rotationRate * deltaSeconds, minPitch, maxPitch);
+		dRotation.Yaw = FMath::ClampAngle(curYawAmt * deltaSeconds, minYaw, maxYaw);
+		dRotation.Pitch = FMath::ClampAngle(curPitchAmt * deltaSeconds, minDeltaPitch, maxDeltaPitch);
 		AddActorLocalRotation(dRotation);
 		//pitch movement control on up & down
-	}
+	}*/
 }
+
+//set my GetCharacterMovement to the my custom character movement class
+//UMyCharacterMovementComp* ACloud10Character::GetCharacterMovement() const { return CustomCharMovementComp; }

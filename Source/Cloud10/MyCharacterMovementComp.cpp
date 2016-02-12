@@ -11,6 +11,11 @@ UMyCharacterMovementComp::UMyCharacterMovementComp(const FObjectInitializer &Obj
 
 }
 
+void UMyCharacterMovementComp::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+}
 /*void UMyCharacterMovementComp::DoDive()
 {
 if (&UMyCharacterMovementComp::IsDiving)
@@ -66,6 +71,7 @@ void UMyCharacterMovementComp::PhysCustomWalk(float deltaTime, int32 Iterations)
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Walk"));
 
 }
+
 
 void UMyCharacterMovementComp::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
