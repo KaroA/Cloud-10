@@ -31,6 +31,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Default)
 		bool isDiving;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		float momentum;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		float jumpVelocity;
 
 	UFUNCTION(BlueprintCallable, Category = Default)
 		void bounceJump();

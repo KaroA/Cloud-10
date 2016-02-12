@@ -37,6 +37,9 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	minRoll = -30.f;
 	maxRoll = 30.f;
 
+	momentum = 100;
+	jumpVelocity = 3000;
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -117,11 +120,9 @@ void ACloud10Character::bounceJump()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("bounceJump"));
 	const FVector ForwardDir = GetActorForwardVector();
 
-	float momentum = 100;
-	float jumpVelocity = 800;
 	const FVector AddForce = ForwardDir * momentum + FVector(0, 0, 1) * jumpVelocity;
 	LaunchCharacter(AddForce, false, true);
-	jumpVelocity = 600;
+	//jumpVelocity = 600;
 }
 
 void ACloud10Character::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
