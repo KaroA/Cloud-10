@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 // ACloud10Character
 
-
+FRotator baseRotation;
 ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -96,6 +96,8 @@ void ACloud10Character::DiveMode()
 	if (isDiving == true)
 	{
 		isDiving = false;
+		FRotator tRotation(0, 0, 0);
+		SetActorRotation(tRotation);
 		/*if (CustomCharMovementComp->IsMovingOnGround())
 		{
 			CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Walking);
@@ -147,7 +149,8 @@ void ACloud10Character::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loca
 void ACloud10Character::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	if (!isDiving)
+		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void ACloud10Character::LookUpAtRate(float Rate)
