@@ -8,6 +8,7 @@
 // ACloud10Character
 
 FRotator baseRotation;
+
 ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -26,7 +27,7 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-	rotationRate = 2.f;
+	rotationRate = 0.1f;
 
 	minPitch = -30.f;
 	maxPitch = 30.f;
@@ -44,7 +45,7 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	//GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
@@ -116,6 +117,7 @@ void ACloud10Character::DiveMode()
 		FRotator tempRotation = GetActorRotation();
 		tempRotation.Pitch = 180;
 		SetActorRotation(tempRotation);
+		bUseControllerRotationYaw = false;
 	}
 }
 
@@ -149,8 +151,8 @@ void ACloud10Character::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loca
 void ACloud10Character::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	if (!isDiving)
-		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	//if (!isDiving)
+	//	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void ACloud10Character::LookUpAtRate(float Rate)
@@ -165,7 +167,7 @@ void ACloud10Character::DiveForward(float Value)
 	float minDeltaPitch = minPitch - prevPitch;
 	float maxDeltaPitch = maxPitch - prevPitch;
 	//roll character in an angle front and back
-	curPitchAmt = Value;
+	float curPitchAmt = Value;
 	const FRotator Rotation = GetActorRotation();
 	FRotator dRotation(0, 0, 0);
 	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
@@ -174,18 +176,26 @@ void ACloud10Character::DiveForward(float Value)
 	//AddControllerPitchInput(dRotation.Pitch);
 }
 
-void ACloud10Character::DiveRight(float Value)
+void ACloud10Character::DiveRight(float Value, float deltaSeconds)
 {
+	
 	float prevYaw = GetActorRotation().Yaw;
 	float minDeltaYaw = minYaw - prevYaw;
 	float maxDeltaYaw = maxYaw - prevYaw;
 	//roll character in an angle front and back
-	curYawAmt = Value;
+	float curYawAmt = Value;
 	const FRotator Rotation = GetActorRotation();
 	FRotator dRotation(0, 0, 0);
-	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Z);
-	dRotation.Yaw = FMath::ClampAngle(curYawAmt * Direction.Z, minDeltaYaw, maxDeltaYaw);
-	AddActorLocalRotation(dRotation);
+	//curYawAmt * rotationRate
+	const FVector Direction = FVector(0.0f, (curYawAmt * rotationRate), 0.0f) ;//= FRotationMatrix(Rotation).GetUnitAxis(EAxis::Z);
+	dRotation = Direction.Rotation();
+	dRotation.Yaw = FMath::ClampAngle(dRotation.Yaw, minDeltaYaw, maxDeltaYaw);
+	//dRotation.Yaw = curYawAmt + Direction.Z;//FMath::ClampAngle(curYawAmt * Direction.Z, minDeltaYaw, maxDeltaYaw);
+	//Controller->SetControlRotation(dRotation);
+	//AddControllerYawInput(dRotation.Yaw);
+	FRotator tempRotation = FMath::RInterpTo(Rotation, dRotation, 3, 0);
+	AddActorLocalRotation(tempRotation);
+	//AddActorWorldRotation(dRotation);
 	//adjust yaw
 		/*float val = 30;
 		float axisVal;
@@ -196,7 +206,7 @@ void ACloud10Character::DiveRight(float Value)
 		FRotator Rotation = GetActorRotation();
 		Rotation.Roll = Value;
 		AddActorLocalRotation(Rotation);*/
-		curRollAmt = Value;
+		//curRollAmt = Value;
 
 		// find out which way is right
 
@@ -216,7 +226,7 @@ void ACloud10Character::MoveForward(float Value)
 		float minDeltaPitch = minPitch - prevPitch;
 		float maxDeltaPitch = maxPitch - prevPitch;
 		//roll character in an angle front and back
-		curPitchAmt = Value;
+		float curPitchAmt = Value;
 		FRotator dRotation(0,0,0);
 		dRotation.Pitch = FMath::ClampAngle(curPitchAmt * rotationRate, minDeltaPitch, maxDeltaPitch);
 		AddActorLocalRotation(dRotation);
@@ -262,7 +272,7 @@ void ACloud10Character::MoveRight(float Value)
 		FRotator Rotation = GetActorRotation();
 		Rotation.Roll = Value;
 		AddActorLocalRotation(Rotation);*/
-		curRollAmt = Value;
+		//curRollAmt = Value;
 
 		// find out which way is right
 		

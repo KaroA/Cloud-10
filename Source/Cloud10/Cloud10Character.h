@@ -11,6 +11,9 @@ class ACloud10Character : public ACharacter
 {
 	GENERATED_BODY()
 
+	//URotatingMovementComponent *rotateMovementComp;
+
+
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -51,7 +54,7 @@ public:
 		void DiveForward(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = Default)
-		void DiveRight(float Value);
+		void DiveRight(float Value, float deltaSeconds);
 
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -59,7 +62,7 @@ protected:
 
 	float rotationRate;
 	float minPitch, maxPitch, minRoll, maxRoll, minYaw, maxYaw;
-	float curPitchAmt, curRollAmt, curYawAmt;
+	//float curPitchAmt, curRollAmt, curYawAmt;
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
