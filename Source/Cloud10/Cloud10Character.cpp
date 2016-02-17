@@ -174,6 +174,14 @@ void ACloud10Character::DiveForward(float Value)
 	dRotation.Pitch = FMath::ClampAngle(curPitchAmt * Direction.Y, minDeltaPitch, maxDeltaPitch);
 	AddActorLocalRotation(dRotation);
 	//AddControllerPitchInput(dRotation.Pitch);
+	FVector moveDirection = FRotationMatrix(dRotation).GetUnitAxis(EAxis::Y);
+	
+	//velocity movement based on forward vector in forward/back direction
+	const FVector ForwardDir = GetActorForwardVector();
+	FVector AddPos = ForwardDir;
+	AddPos = moveDirection * AddPos;
+	//add forward velocity and value of direction
+	AddMovementInput(AddPos, Value);
 }
 
 void ACloud10Character::DiveRight(float Value, float deltaSeconds)
@@ -196,6 +204,15 @@ void ACloud10Character::DiveRight(float Value, float deltaSeconds)
 	FRotator tempRotation = FMath::RInterpTo(Rotation, dRotation, 3, 0);
 	AddActorLocalRotation(tempRotation);
 	//AddActorWorldRotation(dRotation);
+	
+	FVector moveDirection = FRotationMatrix(tempRotation).GetUnitAxis(EAxis::Z);
+	//velocity movement based upon forward vector in left/right direction
+	const FVector ForwardDir = GetActorForwardVector();
+	FVector AddPos = ForwardDir;
+	AddPos = moveDirection * AddPos;
+	//add forward velocity and value of direction
+	AddMovementInput(AddPos, Value);
+	
 	//adjust yaw
 		/*float val = 30;
 		float axisVal;

@@ -67,9 +67,15 @@
     <ClInclude Include="..\..\Source\Cloud10\MyCharacterMovementComp.h">
       <Filter>Source\Cloud10</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Cloud10\CCameraManager.h">
+      <Filter>Source\Cloud10</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Cloud10\MyCharacterMovementComp.cpp">
+      <Filter>Source\Cloud10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Cloud10\CCameraManager.cpp">
       <Filter>Source\Cloud10</Filter>
     </ClCompile>
   </ItemGroup>

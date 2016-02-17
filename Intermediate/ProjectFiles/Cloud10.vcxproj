@@ -43,7 +43,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Cloud10\CCameraManager.cpp" />
     <ClCompile Include="..\..\Source\Cloud10\MyCharacterMovementComp.cpp" />
+    <ClInclude Include="..\..\Source\Cloud10\CCameraManager.h" />
     <ClInclude Include="..\..\Source\Cloud10\MyCharacterMovementComp.h" />
     <None Include="..\..\Cloud10.uproject" />
     <None Include="..\..\Source\Cloud10.Target.cs" />
