@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Project3.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{27659417-D235-4414-91FB-49C752A0DD8C}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Project3.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\Project3Editor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{1A1B6054-B59A-444C-9B1C-F2E5E4D586A9}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\Project3">
+      <UniqueIdentifier>{1EE623D5-A923-4F04-AC4F-7916AC37F37C}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Project3\BatteryPickup.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\BatteryPickup.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project3\CusCameraManager.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\CusCameraManager.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project3\PickUp.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\PickUp.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\Project3\Project3.Build.cs">
+      <Filter>Source\Project3</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\Project3\Project3.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\Project3.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project3\Project3Character.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\Project3Character.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project3\Project3GameMode.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\Project3GameMode.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Project3\SpawnVolume.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Project3\SpawnVolume.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <Filter Include="Source\Project3\Resources">
+      <UniqueIdentifier>{CE74BBF3-3962-4319-B2ED-623BE65B7709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Project3\Resources\Windows">
+      <UniqueIdentifier>{652C9E5E-3DD9-4746-B59F-2C53481E3EBB}</UniqueIdentifier>
+    </Filter>
+    <ResourceCompile Include="..\..\Source\Project3\Resources\Windows\Project3.rc">
+      <Filter>Source\Project3\Resources\Windows</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\Project3\CusCamera.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Project3\MyCharacterMovementComponent.h">
+      <Filter>Source\Project3</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Project3\CusCamera.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Project3\MyCharacterMovementComponent.cpp">
+      <Filter>Source\Project3</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
