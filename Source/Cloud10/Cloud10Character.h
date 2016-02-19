@@ -51,7 +51,7 @@ public:
 		void bounceJump();
 
 	UFUNCTION(BlueprintCallable, Category = Default)
-		void DiveForward(float Value);
+		void DiveForward(float Value, float deltaSeconds);
 
 	UFUNCTION(BlueprintCallable, Category = Default)
 		void DiveRight(float Value, float deltaSeconds);

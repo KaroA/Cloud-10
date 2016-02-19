@@ -8,6 +8,8 @@
 // ACloud10Character
 
 FRotator baseRotation;
+float curYawAmt;
+float curPitchAmt;
 
 ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -115,8 +117,8 @@ void ACloud10Character::DiveMode()
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Dive Mode"));
 		//flip character
 		FRotator tempRotation = GetActorRotation();
-		tempRotation.Pitch = 180;
-		SetActorRotation(tempRotation);
+		//tempRotation.Pitch = 180;
+		//SetActorRotation(tempRotation);
 		bUseControllerRotationYaw = false;
 	}
 }
@@ -161,27 +163,29 @@ void ACloud10Character::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-void ACloud10Character::DiveForward(float Value)
+void ACloud10Character::DiveForward(float Value, float deltaSeconds)
 {
 	float prevPitch = GetActorRotation().Pitch;
 	float minDeltaPitch = minPitch - prevPitch;
 	float maxDeltaPitch = maxPitch - prevPitch;
 	//roll character in an angle front and back
-	float curPitchAmt = Value;
+	curPitchAmt = Value;
 	const FRotator Rotation = GetActorRotation();
 	FRotator dRotation(0, 0, 0);
 	const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
-	dRotation.Pitch = FMath::ClampAngle(curPitchAmt * Direction.Y, minDeltaPitch, maxDeltaPitch);
-	AddActorLocalRotation(dRotation);
+	//dRotation.Pitch = FMath::ClampAngle(Direction.Y, minDeltaPitch, maxDeltaPitch);
+	//SetActorRotation(dRotation);
+	//AddActorLocalRotation(dRotation);
 	//AddControllerPitchInput(dRotation.Pitch);
-	FVector moveDirection = FRotationMatrix(dRotation).GetUnitAxis(EAxis::Y);
+
+	const FRotator YawRotation(0, dRotation.Yaw, 0);
+	//get forward vector
+	FVector moveDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	
 	
 	//velocity movement based on forward vector in forward/back direction
-	const FVector ForwardDir = GetActorForwardVector();
-	FVector AddPos = ForwardDir;
-	AddPos = moveDirection * AddPos;
-	//add forward velocity and value of direction
-	AddMovementInput(AddPos, Value);
+	//const FVector ForwardDir = GetActorForwardVector();
+	//GetCharacterMovement()->AddForce(moveDirection * 1000);
 }
 
 void ACloud10Character::DiveRight(float Value, float deltaSeconds)
@@ -191,7 +195,9 @@ void ACloud10Character::DiveRight(float Value, float deltaSeconds)
 	float minDeltaYaw = minYaw - prevYaw;
 	float maxDeltaYaw = maxYaw - prevYaw;
 	//roll character in an angle front and back
-	float curYawAmt = Value;
+	curYawAmt = Value;
+
+	/*
 	const FRotator Rotation = GetActorRotation();
 	FRotator dRotation(0, 0, 0);
 	//curYawAmt * rotationRate
@@ -204,8 +210,10 @@ void ACloud10Character::DiveRight(float Value, float deltaSeconds)
 	FRotator tempRotation = FMath::RInterpTo(Rotation, dRotation, 3, 0);
 	AddActorLocalRotation(tempRotation);
 	//AddActorWorldRotation(dRotation);
+	*/
 	
-	FVector moveDirection = FRotationMatrix(tempRotation).GetUnitAxis(EAxis::Z);
+	FRotator Rotation = GetActorRotation();
+	FVector moveDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Z);
 	//velocity movement based upon forward vector in left/right direction
 	const FVector ForwardDir = GetActorForwardVector();
 	FVector AddPos = ForwardDir;
@@ -314,6 +322,34 @@ void ACloud10Character::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
 
+	/**
+	*New Idea - Cancel gravity, add my own "gravity force" 
+	*and control the direction of the force based upon the characters rotation
+	*/
+
+
+	/*
+	if (isDiving)
+	{
+		const FRotator Rotation = GetActorRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		FVector moveDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		
+		FRotator AddRot(0,curYawAmt,curPitchAmt);
+		AddRot.Euler();
+		AddActorLocalRotation(AddRot);
+
+		// get forward vector
+		const FVector forwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		//velocity movement based on forward vector in forward/back direction
+		//const FVector ForwardDir = GetActorForwardVector();
+		FVector AddPos = moveDirection;
+		AddPos = Rotation.Vector * AddPos;
+		//add forward velocity and value of direction
+		AddMovementInput(AddPos, curYawAmt);
+	}
+	*/
 	/*if (isDiving)
 	{
 		//add gravity to pawn to increase acceleration
