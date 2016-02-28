@@ -18,12 +18,15 @@ struct FActiveCamera
 		bool edgeCamera;
 	UPROPERTY(BlueprintReadWrite, Category = "ActiveCamera")
 		bool dashCamera;
+	UPROPERTY(BlueprintReadWrite, Category = "ActiveCamera")
+		bool bJumpCamera;
 	
 	FActiveCamera()
 	{
 		diveCamera = false;
 		edgeCamera = false;
 		dashCamera = false;
+		bJumpCamera = false;
 		mainCamera = true;
 	}
 };

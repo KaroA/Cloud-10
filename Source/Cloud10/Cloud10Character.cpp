@@ -42,9 +42,9 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	jumpVelocity = 3000;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
+	//bUseControllerRotationPitch = false;
+	//bUseControllerRotationYaw = false;
+	//bUseControllerRotationRoll = false;
 
 	// Configure character movement
 	//GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
@@ -100,7 +100,7 @@ void ACloud10Character::DiveMode()
 	{
 		isDiving = false;
 		FRotator tRotation(0, 0, 0);
-		SetActorRotation(tRotation);
+		//SetActorRotation(tRotation);
 		/*if (CustomCharMovementComp->IsMovingOnGround())
 		{
 			CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Walking);
@@ -115,11 +115,16 @@ void ACloud10Character::DiveMode()
 		isDiving = true;
 		//CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Diving);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Dive Mode"));
-		//flip character
-		FRotator tempRotation = GetActorRotation();
+		//flip character and set rotation to mesh current rotation
+		float ctrlYaw = Controller->GetControlRotation().Yaw;
+		FRotator tempRotation = FRotator(0, 0, 0);//GetActorRotation();
+		tempRotation.Yaw = ctrlYaw;
+		//GetCapsuleComponent()->RelativeRotation;
+		//SeActorRotation(tempRotation);
 		//tempRotation.Pitch = 180;
 		//SetActorRotation(tempRotation);
-		bUseControllerRotationYaw = false;
+		//bUseControllerRotationYaw = true;
+		//AddActorLocalRotation(tempRotation);
 	}
 }
 
@@ -321,6 +326,7 @@ void ACloud10Character::LookUp(float Value)
 void ACloud10Character::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
+
 
 	/**
 	*New Idea - Cancel gravity, add my own "gravity force" 

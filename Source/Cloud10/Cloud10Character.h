@@ -84,6 +84,8 @@ protected:
 
 	void LookUp(float Value);
 
+	void StopJumping();
+
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 

@@ -38,6 +38,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Dive)
 		bool IsDiving;
+	float forceY;
+	float invertGrav;
+	bool jumping;
+	float airTime;
 
 	//UFUNCTION(BlueprintImplementableEvent, Category = Character)
 	//void startBounceJump();
