@@ -38,8 +38,8 @@ ACloud10Character::ACloud10Character(const FObjectInitializer& ObjectInitializer
 	minYaw = -30.f;
 	maxYaw = 30.f;
 
-	momentum = 100;
-	jumpVelocity = 3000;
+	momentum = 0;
+	baseJumpForce = 2000;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	//bUseControllerRotationPitch = false;
@@ -99,6 +99,8 @@ void ACloud10Character::DiveMode()
 	if (isDiving == true)
 	{
 		isDiving = false;
+		//tell animator to stop diving
+		stopDiving = true;
 		FRotator tRotation(0, 0, 0);
 		//SetActorRotation(tRotation);
 		/*if (CustomCharMovementComp->IsMovingOnGround())
@@ -113,6 +115,7 @@ void ACloud10Character::DiveMode()
 	else
 	{
 		isDiving = true;
+		//stopDiving = false;
 		//CustomCharMovementComp->SetMovementMode(MOVE_Custom, TMOVE_Diving);
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Dive Mode"));
 		//flip character and set rotation to mesh current rotation
@@ -137,12 +140,35 @@ void ACloud10Character::Jump()
 	else bPressedJump = false;
 }
 
-void ACloud10Character::bounceJump()
+void ACloud10Character::bounceJump(float Value)
 {
+	float curJumpVelocity = Value;
+	float jumpVelocity;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("bounceJump"));
 	const FVector ForwardDir = GetActorForwardVector();
+	/*bounceCount++;
+	if(bounceCount > 1)
+	{
+		jumpVelocity = jumpVelocity * 1.3;
+	}*/
+	//if player has landed, reset jumpVelocity
+	/*if (curJumpVelocity < baseJumpForce)
+		jumpVelocity = baseJumpForce;*/
 
-	const FVector AddForce = ForwardDir * momentum + FVector(0, 0, 1) * jumpVelocity;
+	//thresholds for jump velocity's that convert to force?
+	//max jump?
+	if (curJumpVelocity >= 3000)
+	{
+		curJumpVelocity = 3000;
+	}
+	//add only player's vertical speed to the last jump Velocity
+	jumpVelocity = FMath().Abs(curJumpVelocity) + baseJumpForce;
+	FVector AddForce = FVector(0, 0, 1) * jumpVelocity;
+	//separate max walk speed from max fall speed
+		//GetCharacterMovement()->MaxWalkSpeed = AddForce.Size();
+	//convert float to string
+	FString tempString = FString::SanitizeFloat(AddForce.Size());
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, *tempString);
 	LaunchCharacter(AddForce, false, true);
 	//bPressedJump = true;
 	//jumpVelocity = 600;
@@ -337,6 +363,9 @@ void ACloud10Character::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
 
+
+	//increase the maximum falling velocity to the character's max speed
+	//GetCharacterMovement()->GetPhysicsVolume()->TerminalVelocity = GetCharacterMovement()->Velocity.Size();
 
 	/**
 	*New Idea - Cancel gravity, add my own "gravity force" 
